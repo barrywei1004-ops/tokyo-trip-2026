@@ -1,5 +1,7 @@
 
 import streamlit as st
+import requests
+from datetime import datetime
 
 # =========================================================
 # 基本設定
@@ -15,6 +17,43 @@ st.set_page_config(
 # 手機版 / 網站外觀 CSS
 # =========================================================
 st.markdown("""
+/* ================================
+   Sidebar 側邊欄
+================================ */
+
+/* Tokyo Trip 標題 */
+[data-testid="stSidebar"] h1 {
+    font-size: 32px !important;
+    font-weight: 800 !important;
+}
+
+/* 日期 */
+[data-testid="stSidebar"] .stCaptionContainer {
+    font-size: 17px !important;
+}
+
+/* 旅遊選單標題 */
+[data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
+    font-size: 18px !important;
+    font-weight: 700 !important;
+}
+
+/* Radio 選項文字 */
+[data-testid="stSidebar"] div[role="radiogroup"] label p {
+    font-size: 19px !important;
+    font-weight: 600 !important;
+}
+
+/* 增加選項上下間距 */
+[data-testid="stSidebar"] div[role="radiogroup"] label {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+}
+
+/* 最下方 Tokyo Travel 2026 */
+[data-testid="stSidebar"] small {
+    font-size: 15px !important;
+}
 <style>
 
 /* 整體背景 */
@@ -102,16 +141,15 @@ with st.sidebar:
 
     st.divider()
 
-    page = st.radio(
-        "旅遊選單",
-        [
-            "✈️ 航班資訊",
-            "🏨 飯店位置",
-            "💱 台幣 / 日幣匯率換算",
-            "🗺️ 主要旅程"
-        ]
-    )
-
+page = st.radio(
+    "旅遊選單",
+    [
+        "🗺️ 主要旅程",
+        "✈️ 航班資訊",
+        "🏨 飯店位置",
+        "💱 台幣 / 日幣匯率換算"
+    ]
+)
     st.divider()
 
     st.caption("Tokyo Travel 2026")
@@ -240,66 +278,159 @@ elif page == "🏨 飯店位置":
 # =========================================================
 elif page == "💱 台幣 / 日幣匯率換算":
 
-    st.title("💱 台幣 / 日幣")
+# =========================================================
+# 台幣 / 日幣即時匯率換算
+# =========================================================
+elif page == "💱 台幣 / 日幣匯率換算":
 
-    st.caption("Currency Converter")
-
-    st.markdown("---")
-
-    st.info(
-        "目前先使用手動設定匯率，之後可以再改成自動抓取即時匯率。"
-    )
-
-    # 使用者自己修改匯率
-    exchange_rate = st.number_input(
-        "目前匯率｜1 日圓 = ? 台幣",
-        min_value=0.01,
-        max_value=1.00,
-        value=0.21,
-        step=0.001,
-        format="%.3f"
-    )
+    st.title("💱 台幣 / 日幣匯率換算")
+    st.caption("TWD ↔ JPY Currency Converter")
 
     st.markdown("---")
 
-    mode = st.radio(
-        "換算方向",
-        [
-            "🇯🇵 日幣 → 🇹🇼 台幣",
-            "🇹🇼 台幣 → 🇯🇵 日幣"
-        ]
-    )
 
-    # ---------- 日幣 → 台幣 ----------
-    if mode == "🇯🇵 日幣 → 🇹🇼 台幣":
+    # -----------------------------------------------------
+    # 取得最新匯率
+    # -----------------------------------------------------
+    @st.cache_data(ttl=3600)
+    def get_exchange_rate():
 
-        yen = st.number_input(
-            "輸入日幣 ¥",
-            min_value=0,
-            value=1000,
-            step=100
+        url = "https://api.frankfurter.dev/v2/rates"
+
+        try:
+
+            response = requests.get(
+                url,
+                params={
+                    "base": "TWD",
+                    "quotes": "JPY"
+                },
+                timeout=10
+            )
+
+            response.raise_for_status()
+
+            data = response.json()
+
+            if isinstance(data, list) and len(data) > 0:
+
+                rate = float(data[0]["rate"])
+                date = data[0]["date"]
+
+                return rate, date
+
+            return None, None
+
+        except Exception:
+            return None, None
+
+
+    rate, rate_date = get_exchange_rate()
+
+
+    # -----------------------------------------------------
+    # 成功取得匯率
+    # -----------------------------------------------------
+    if rate:
+
+        jpy_to_twd = 1 / rate
+
+        st.success("✅ 已取得最新可用匯率")
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+
+            st.metric(
+                "NT$1 可換",
+                f"¥{rate:.3f}"
+            )
+
+        with col2:
+
+            st.metric(
+                "¥1 約為",
+                f"NT${jpy_to_twd:.3f}"
+            )
+
+
+        st.caption(
+            f"匯率資料日期：{rate_date}"
         )
 
-        twd = yen * exchange_rate
-
-        st.metric(
-            "約為台幣",
-            f"NT$ {twd:,.0f}"
+        st.caption(
+            "※ 此為參考匯率，實際刷卡、換匯與現鈔價格會因銀行及手續費不同。"
         )
 
-    # ---------- 台幣 → 日幣 ----------
-    else:
 
-        twd = st.number_input(
-            "輸入台幣 NT$",
-            min_value=0,
-            value=1000,
-            step=100
+        st.markdown("---")
+
+
+        # -------------------------------------------------
+        # 換算方向
+        # -------------------------------------------------
+        mode = st.radio(
+            "換算方向",
+            [
+                "🇯🇵 日幣 → 🇹🇼 台幣",
+                "🇹🇼 台幣 → 🇯🇵 日幣"
+            ],
+            horizontal=True
         )
 
-        if exchange_rate > 0:
 
-            yen = twd / exchange_rate
+        # -------------------------------------------------
+        # 日幣 → 台幣
+        # -------------------------------------------------
+        if mode == "🇯🇵 日幣 → 🇹🇼 台幣":
+
+            yen = st.number_input(
+                "輸入日幣 ¥",
+                min_value=0,
+                value=1000,
+                step=100
+            )
+
+            twd = yen * jpy_to_twd
+
+            st.metric(
+                "約為台幣",
+                f"NT$ {twd:,.0f}"
+            )
+
+
+            st.markdown("#### 快速換算")
+
+            quick_values = [
+                100,
+                500,
+                1000,
+                5000,
+                10000
+            ]
+
+            for value in quick_values:
+
+                converted = value * jpy_to_twd
+
+                st.write(
+                    f"¥{value:,} ≈ NT${converted:,.0f}"
+                )
+
+
+        # -------------------------------------------------
+        # 台幣 → 日幣
+        # -------------------------------------------------
+        else:
+
+            twd = st.number_input(
+                "輸入台幣 NT$",
+                min_value=0,
+                value=1000,
+                step=100
+            )
+
+            yen = twd * rate
 
             st.metric(
                 "約為日幣",
@@ -307,33 +438,55 @@ elif page == "💱 台幣 / 日幣匯率換算":
             )
 
 
-# =========================================================
-# 主要旅程
-# =========================================================
-elif page == "🗺️ 主要旅程":
+            st.markdown("#### 快速換算")
 
-    st.title("🗺️ 主要旅程")
+            quick_values = [
+                100,
+                500,
+                1000,
+                3000,
+                5000
+            ]
 
-    st.caption("Tokyo Itinerary")
+            for value in quick_values:
 
-    st.markdown("---")
+                converted = value * rate
+
+                st.write(
+                    f"NT${value:,} ≈ ¥{converted:,.0f}"
+                )
+
+
+        # -------------------------------------------------
+        # 手動重新整理
+        # -------------------------------------------------
+        st.markdown("---")
+
+        if st.button(
+            "🔄 更新最新匯率",
+            use_container_width=True
+        ):
+
+            st.cache_data.clear()
+            st.rerun()
+
 
     # -----------------------------------------------------
-    # Day 下拉式選單
+    # API 失敗
     # -----------------------------------------------------
-    selected_day = st.selectbox(
-        "選擇旅遊日期",
-        [
-            "Day 1｜8/10",
-            "Day 2｜8/11",
-            "Day 3｜8/12",
-            "Day 4｜8/13",
-            "Day 5｜8/14"
-        ]
-    )
+    else:
 
-    st.markdown("---")
+        st.error(
+            "目前無法取得匯率資料，請稍後再試。"
+        )
 
+        if st.button(
+            "🔄 重新取得匯率",
+            use_container_width=True
+        ):
+
+            st.cache_data.clear()
+            st.rerun()
 
     # =====================================================
     # DAY 1
