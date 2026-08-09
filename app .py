@@ -19,17 +19,10 @@ st.set_page_config(
 st.markdown("""
 <style>
 
-/* ================================
-   整體背景
-================================ */
 .stApp {
     background-color: #F8F7F3;
 }
 
-
-/* ================================
-   主內容
-================================ */
 .block-container {
     max-width: 760px;
     padding-top: 2rem;
@@ -191,7 +184,7 @@ h2 {
 
 
 /* ================================
-   Sidebar 側邊欄
+   Sidebar
 ================================ */
 [data-testid="stSidebar"] h1 {
     font-size: 32px !important;
@@ -279,20 +272,23 @@ h2 {
 # =========================================================
 def travel_card(time, title, description):
 
+    html = f"""
+<div class="travel-card">
+<div class="travel-time">{time}</div>
+<div class="travel-title">{title}</div>
+<div class="travel-description">{description}</div>
+</div>
+"""
+
     st.markdown(
-        f"""
-        <div class="travel-card">
-            <div class="travel-time">{time}</div>
-            <div class="travel-title">{title}</div>
-            <div class="travel-description">{description}</div>
-        </div>
-        """,
+        html,
         unsafe_allow_html=True
     )
 
 
 # =========================================================
 # 共用函式：航班卡片
+# 修正：HTML 不再被 Streamlit 當成程式碼顯示
 # =========================================================
 def flight_card(
     trip_type,
@@ -314,101 +310,57 @@ def flight_card(
     passengers
 ):
 
+    html = f"""
+<div class="flight-card">
+<div class="flight-tag">{trip_type} ｜ {date}</div>
+
+<div class="flight-airline">{flight_no} ｜ {airline}</div>
+<div class="flight-airline-en">{airline_en}</div>
+
+<div class="flight-route">
+
+<div class="flight-location">
+<div class="flight-time">{depart_time}</div>
+<div class="flight-code">{depart_code}</div>
+<div class="flight-airport">{depart_airport}</div>
+<div class="flight-terminal">{depart_terminal}</div>
+</div>
+
+<div class="flight-middle">
+<div class="flight-plane">✈️</div>
+<div class="flight-line"></div>
+<div class="flight-duration">{duration}</div>
+</div>
+
+<div class="flight-location right">
+<div class="flight-time">{arrive_time}</div>
+<div class="flight-code">{arrive_code}</div>
+<div class="flight-airport">{arrive_airport}</div>
+<div class="flight-terminal">{arrive_terminal}</div>
+</div>
+
+</div>
+
+<hr>
+
+<div class="flight-info">
+✈️ <b>航班編號：</b>{flight_no}<br>
+🏢 <b>航空公司：</b>{airline} {airline_en}<br>
+💺 <b>艙等：</b>{cabin}<br>
+🛫 <b>機型：</b>{aircraft}<br>
+⏱️ <b>飛行時間：</b>{duration}
+</div>
+
+<div class="passenger-box">
+👥 <b>同班旅客</b><br>
+{passengers}
+</div>
+
+</div>
+"""
+
     st.markdown(
-        f"""
-        <div class="flight-card">
-
-            <div class="flight-tag">
-                {trip_type} ｜ {date}
-            </div>
-
-            <div class="flight-airline">
-                {flight_no} ｜ {airline}
-            </div>
-
-            <div class="flight-airline-en">
-                {airline_en}
-            </div>
-
-            <div class="flight-route">
-
-                <div class="flight-location">
-
-                    <div class="flight-time">
-                        {depart_time}
-                    </div>
-
-                    <div class="flight-code">
-                        {depart_code}
-                    </div>
-
-                    <div class="flight-airport">
-                        {depart_airport}
-                    </div>
-
-                    <div class="flight-terminal">
-                        {depart_terminal}
-                    </div>
-
-                </div>
-
-                <div class="flight-middle">
-
-                    <div class="flight-plane">
-                        ✈️
-                    </div>
-
-                    <div class="flight-line"></div>
-
-                    <div class="flight-duration">
-                        {duration}
-                    </div>
-
-                </div>
-
-                <div class="flight-location right">
-
-                    <div class="flight-time">
-                        {arrive_time}
-                    </div>
-
-                    <div class="flight-code">
-                        {arrive_code}
-                    </div>
-
-                    <div class="flight-airport">
-                        {arrive_airport}
-                    </div>
-
-                    <div class="flight-terminal">
-                        {arrive_terminal}
-                    </div>
-
-                </div>
-
-            </div>
-
-            <hr>
-
-            <div class="flight-info">
-
-                ✈️ <b>航班編號：</b>{flight_no}<br>
-                🏢 <b>航空公司：</b>{airline} {airline_en}<br>
-                💺 <b>艙等：</b>{cabin}<br>
-                🛫 <b>機型：</b>{aircraft}<br>
-                ⏱️ <b>飛行時間：</b>{duration}
-
-            </div>
-
-            <div class="passenger-box">
-
-                👥 <b>同班旅客</b><br>
-                {passengers}
-
-            </div>
-
-        </div>
-        """,
+        html,
         unsafe_allow_html=True
     )
 
@@ -500,9 +452,7 @@ if page == "🗺️ 主要旅程":
     st.divider()
 
 
-    # =====================================================
     # DAY 1
-    # =====================================================
     if selected_day == "Day 1｜8/10":
 
         st.subheader("Day 1｜8月10日")
@@ -528,9 +478,7 @@ if page == "🗺️ 主要旅程":
         )
 
 
-    # =====================================================
     # DAY 2
-    # =====================================================
     elif selected_day == "Day 2｜8/11":
 
         st.subheader("Day 2｜8月11日")
@@ -544,9 +492,7 @@ if page == "🗺️ 主要旅程":
         )
 
 
-    # =====================================================
     # DAY 3
-    # =====================================================
     elif selected_day == "Day 3｜8/12":
 
         st.subheader("Day 3｜8月12日")
@@ -566,9 +512,7 @@ if page == "🗺️ 主要旅程":
         )
 
 
-    # =====================================================
     # DAY 4
-    # =====================================================
     elif selected_day == "Day 4｜8/13":
 
         st.subheader("Day 4｜8月13日")
@@ -582,9 +526,7 @@ if page == "🗺️ 主要旅程":
         )
 
 
-    # =====================================================
     # DAY 5
-    # =====================================================
     elif selected_day == "Day 5｜8/14":
 
         st.subheader("Day 5｜8月14日")
@@ -616,9 +558,7 @@ elif page == "✈️ 航班資訊":
     st.divider()
 
 
-    # -----------------------------------------------------
     # 旅客選擇
-    # -----------------------------------------------------
     passenger = st.selectbox(
         "查看旅客",
         [
@@ -703,19 +643,13 @@ elif page == "✈️ 航班資訊":
     travel_card(
         "8 / 10",
         "MM620｜樂桃航空",
-        """
-        02:00 桃園 T1 → 06:30 成田 T1<br>
-        Airbus A320｜經濟艙｜3 小時 30 分
-        """
+        "02:00 桃園 T1 → 06:30 成田 T1<br>Airbus A320｜經濟艙｜3 小時 30 分"
     )
 
     travel_card(
         "8 / 14",
         "SL395｜泰國獅航",
-        """
-        17:40 成田 T1N → 20:20 桃園 T1<br>
-        Boeing 737-900｜經濟艙｜3 小時 40 分
-        """
+        "17:40 成田 T1N → 20:20 桃園 T1<br>Boeing 737-900｜經濟艙｜3 小時 40 分"
     )
 
     st.info(
@@ -735,19 +669,13 @@ elif page == "🏨 飯店位置":
     st.divider()
 
 
-    # -----------------------------------------------------
     # Hotel 1
-    # -----------------------------------------------------
     st.subheader("8/10 ～ 8/12")
 
     travel_card(
         "Hotel 01",
         "🏨 the b 淺草",
-        """
-        📍 日本〒111-0035<br>
-        Tokyo, Taito City,<br>
-        Nishiasakusa, 3 Chome−16−12
-        """
+        "📍 日本〒111-0035<br>Tokyo, Taito City,<br>Nishiasakusa, 3 Chome−16−12"
     )
 
     st.link_button(
@@ -759,19 +687,13 @@ elif page == "🏨 飯店位置":
     st.divider()
 
 
-    # -----------------------------------------------------
     # Hotel 2
-    # -----------------------------------------------------
     st.subheader("8/12 ～ 8/14")
 
     travel_card(
         "Hotel 02",
         "🏨 Hotel Amanek Asakusa Ekimae",
-        """
-        📍 2 Chome-7-2 Komagata<br>
-        Taito City, Tokyo 111-0043<br>
-        日本
-        """
+        "📍 2 Chome-7-2 Komagata<br>Taito City, Tokyo 111-0043<br>日本"
     )
 
     st.link_button(
@@ -795,9 +717,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
     rate, rate_date = get_exchange_rate()
 
 
-    # -----------------------------------------------------
-    # 成功取得匯率
-    # -----------------------------------------------------
     if rate is not None:
 
         jpy_to_twd = 1 / rate
@@ -831,9 +750,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
         st.divider()
 
 
-        # -------------------------------------------------
-        # 換算方向
-        # -------------------------------------------------
         mode = st.radio(
             "換算方向",
             [
@@ -844,9 +760,7 @@ elif page == "💱 台幣 / 日幣匯率換算":
         )
 
 
-        # -------------------------------------------------
         # JPY → TWD
-        # -------------------------------------------------
         if mode == "🇯🇵 日幣 → 🇹🇼 台幣":
 
             yen = st.number_input(
@@ -882,9 +796,7 @@ elif page == "💱 台幣 / 日幣匯率換算":
                 )
 
 
-        # -------------------------------------------------
         # TWD → JPY
-        # -------------------------------------------------
         else:
 
             twd = st.number_input(
@@ -920,9 +832,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
                 )
 
 
-        # -------------------------------------------------
-        # 更新匯率
-        # -------------------------------------------------
         st.divider()
 
         if st.button(
@@ -934,9 +843,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
             st.rerun()
 
 
-    # -----------------------------------------------------
-    # API 無法取得
-    # -----------------------------------------------------
     else:
 
         st.error(
