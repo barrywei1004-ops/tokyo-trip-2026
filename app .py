@@ -214,24 +214,51 @@ h2 {
     font-size: 16px !important;
 }
 
+/* ================================
+   Streamlit 上方 Header
+================================ */
+[data-testid="stHeader"] {
+    background-color: #F8F7F3 !important;
+}
+
 
 /* ================================
    手機版
 ================================ */
 @media (max-width: 768px) {
 
+    /* 主內容區
+       增加上方空間，避免被 Streamlit 手機版工具列遮住
+    */
     .block-container {
-        padding-left: 1rem;
-        padding-right: 1rem;
-        padding-top: 1rem;
+        padding-left: 1rem !important;
+        padding-right: 1rem !important;
+        padding-top: 4.5rem !important;
+        padding-bottom: 5rem !important;
     }
 
+    /* 頁面主標題 */
     h1 {
         font-size: 1.7rem !important;
+        font-weight: 800 !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
     }
 
+    /* 次標題 */
+    h2 {
+        font-size: 1.45rem !important;
+    }
+
+    /* 行程卡片 */
     .travel-card {
         padding: 16px;
+        border-radius: 16px;
+        margin-bottom: 14px;
+    }
+
+    .travel-time {
+        font-size: 15px;
     }
 
     .travel-title {
@@ -240,10 +267,13 @@ h2 {
 
     .travel-description {
         font-size: 15px;
+        line-height: 1.6;
     }
 
+    /* 航班卡片 */
     .flight-card {
         padding: 16px;
+        border-radius: 16px;
     }
 
     .flight-time {
@@ -258,8 +288,25 @@ h2 {
         font-size: 12px;
     }
 
+    .flight-terminal {
+        font-size: 12px;
+    }
+
     .flight-route {
         gap: 6px;
+    }
+
+    .flight-info {
+        font-size: 14px;
+    }
+
+    .passenger-box {
+        font-size: 14px;
+    }
+
+    /* Selectbox 手機顯示 */
+    [data-baseweb="select"] {
+        width: 100% !important;
     }
 }
 
