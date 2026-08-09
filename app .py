@@ -82,39 +82,141 @@ h2 {
 
 
 /* ================================
+   航班卡片
+================================ */
+.flight-card {
+    background-color: #FFFFFF;
+    padding: 22px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+    border: 1px solid #E8E8E8;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.04);
+}
+
+.flight-tag {
+    font-size: 14px;
+    font-weight: 700;
+    color: #777777;
+    margin-bottom: 8px;
+}
+
+.flight-airline {
+    font-size: 22px;
+    font-weight: 800;
+    color: #222222;
+    margin-bottom: 2px;
+}
+
+.flight-airline-en {
+    font-size: 14px;
+    color: #888888;
+    margin-bottom: 20px;
+}
+
+.flight-route {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    margin-bottom: 18px;
+}
+
+.flight-location {
+    width: 38%;
+}
+
+.flight-location.right {
+    text-align: right;
+}
+
+.flight-time {
+    font-size: 25px;
+    font-weight: 800;
+    color: #222222;
+}
+
+.flight-code {
+    font-size: 20px;
+    font-weight: 700;
+    margin-top: 3px;
+}
+
+.flight-airport {
+    font-size: 14px;
+    color: #666666;
+    margin-top: 3px;
+}
+
+.flight-terminal {
+    font-size: 13px;
+    color: #999999;
+    margin-top: 2px;
+}
+
+.flight-middle {
+    width: 24%;
+    text-align: center;
+}
+
+.flight-plane {
+    font-size: 24px;
+}
+
+.flight-duration {
+    font-size: 13px;
+    color: #888888;
+    margin-top: 4px;
+}
+
+.flight-line {
+    border-top: 1px solid #DDDDDD;
+    margin-top: 6px;
+    margin-bottom: 6px;
+}
+
+.flight-info {
+    font-size: 15px;
+    color: #444444;
+    line-height: 1.9;
+}
+
+.passenger-box {
+    background-color: #F7F7F7;
+    padding: 14px;
+    border-radius: 12px;
+    margin-top: 15px;
+    font-size: 15px;
+}
+
+
+/* ================================
    Sidebar 側邊欄
 ================================ */
-
-/* 側邊欄標題 */
 [data-testid="stSidebar"] h1 {
     font-size: 32px !important;
     font-weight: 800 !important;
 }
 
-/* 側邊欄一般文字 */
 [data-testid="stSidebar"] p {
     font-size: 17px;
 }
 
-/* 選單標題 */
 [data-testid="stSidebar"] [data-testid="stWidgetLabel"] p {
     font-size: 18px !important;
     font-weight: 700 !important;
 }
 
-/* Radio 選項 */
 [data-testid="stSidebar"] div[role="radiogroup"] label p {
     font-size: 19px !important;
     font-weight: 600 !important;
 }
 
-/* Radio 選項間距 */
 [data-testid="stSidebar"] div[role="radiogroup"] label {
     padding-top: 6px !important;
     padding-bottom: 6px !important;
 }
 
-/* Caption */
 [data-testid="stSidebar"] [data-testid="stCaptionContainer"] p {
     font-size: 16px !important;
 }
@@ -146,6 +248,26 @@ h2 {
     .travel-description {
         font-size: 15px;
     }
+
+    .flight-card {
+        padding: 16px;
+    }
+
+    .flight-time {
+        font-size: 22px;
+    }
+
+    .flight-code {
+        font-size: 18px;
+    }
+
+    .flight-airport {
+        font-size: 12px;
+    }
+
+    .flight-route {
+        gap: 6px;
+    }
 }
 
 </style>
@@ -163,6 +285,128 @@ def travel_card(time, title, description):
             <div class="travel-time">{time}</div>
             <div class="travel-title">{title}</div>
             <div class="travel-description">{description}</div>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
+
+
+# =========================================================
+# 共用函式：航班卡片
+# =========================================================
+def flight_card(
+    trip_type,
+    date,
+    airline,
+    airline_en,
+    flight_no,
+    depart_time,
+    depart_code,
+    depart_airport,
+    depart_terminal,
+    arrive_time,
+    arrive_code,
+    arrive_airport,
+    arrive_terminal,
+    duration,
+    cabin,
+    aircraft,
+    passengers
+):
+
+    st.markdown(
+        f"""
+        <div class="flight-card">
+
+            <div class="flight-tag">
+                {trip_type} ｜ {date}
+            </div>
+
+            <div class="flight-airline">
+                {flight_no} ｜ {airline}
+            </div>
+
+            <div class="flight-airline-en">
+                {airline_en}
+            </div>
+
+            <div class="flight-route">
+
+                <div class="flight-location">
+
+                    <div class="flight-time">
+                        {depart_time}
+                    </div>
+
+                    <div class="flight-code">
+                        {depart_code}
+                    </div>
+
+                    <div class="flight-airport">
+                        {depart_airport}
+                    </div>
+
+                    <div class="flight-terminal">
+                        {depart_terminal}
+                    </div>
+
+                </div>
+
+                <div class="flight-middle">
+
+                    <div class="flight-plane">
+                        ✈️
+                    </div>
+
+                    <div class="flight-line"></div>
+
+                    <div class="flight-duration">
+                        {duration}
+                    </div>
+
+                </div>
+
+                <div class="flight-location right">
+
+                    <div class="flight-time">
+                        {arrive_time}
+                    </div>
+
+                    <div class="flight-code">
+                        {arrive_code}
+                    </div>
+
+                    <div class="flight-airport">
+                        {arrive_airport}
+                    </div>
+
+                    <div class="flight-terminal">
+                        {arrive_terminal}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <hr>
+
+            <div class="flight-info">
+
+                ✈️ <b>航班編號：</b>{flight_no}<br>
+                🏢 <b>航空公司：</b>{airline} {airline_en}<br>
+                💺 <b>艙等：</b>{cabin}<br>
+                🛫 <b>機型：</b>{aircraft}<br>
+                ⏱️ <b>飛行時間：</b>{duration}
+
+            </div>
+
+            <div class="passenger-box">
+
+                👥 <b>同班旅客</b><br>
+                {passengers}
+
+            </div>
+
         </div>
         """,
         unsafe_allow_html=True
@@ -371,20 +615,111 @@ elif page == "✈️ 航班資訊":
 
     st.divider()
 
-    st.subheader("🇹🇼 → 🇯🇵 去程")
 
-    travel_card(
-        "2026 / 08 / 10",
-        "桃園國際機場 → 東京成田機場",
-        "🛬 抵達成田機場：06:30"
+    # -----------------------------------------------------
+    # 旅客選擇
+    # -----------------------------------------------------
+    passenger = st.selectbox(
+        "查看旅客",
+        [
+            "👥 全部旅客",
+            "伯燁",
+            "伯丞",
+            "佳芳"
+        ]
     )
 
+    if passenger == "👥 全部旅客":
+        passenger_text = "伯燁・伯丞・佳芳"
+    else:
+        passenger_text = passenger
+
+    st.caption(
+        f"目前顯示：{passenger_text}"
+    )
+
+    st.divider()
+
+
+    # =====================================================
+    # 去程
+    # =====================================================
+    st.subheader("🇹🇼 → 🇯🇵 去程")
+
+    flight_card(
+        trip_type="去程",
+        date="2026 年 8 月 10 日",
+        airline="樂桃航空",
+        airline_en="Peach Aviation",
+        flight_no="MM620",
+        depart_time="02:00",
+        depart_code="TPE",
+        depart_airport="臺灣桃園國際機場",
+        depart_terminal="Terminal 1",
+        arrive_time="06:30",
+        arrive_code="NRT",
+        arrive_airport="成田國際機場",
+        arrive_terminal="Terminal 1",
+        duration="3 小時 30 分",
+        cabin="經濟艙",
+        aircraft="Airbus A320",
+        passengers=passenger_text
+    )
+
+
+    # =====================================================
+    # 回程
+    # =====================================================
     st.subheader("🇯🇵 → 🇹🇼 回程")
 
+    flight_card(
+        trip_type="回程",
+        date="2026 年 8 月 14 日",
+        airline="泰國獅航",
+        airline_en="Thai Lion Air",
+        flight_no="SL395",
+        depart_time="17:40",
+        depart_code="NRT",
+        depart_airport="成田國際機場",
+        depart_terminal="Terminal 1N",
+        arrive_time="20:20",
+        arrive_code="TPE",
+        arrive_airport="臺灣桃園國際機場",
+        arrive_terminal="Terminal 1",
+        duration="3 小時 40 分",
+        cabin="經濟艙",
+        aircraft="Boeing 737-900",
+        passengers=passenger_text
+    )
+
+
+    # =====================================================
+    # 航班摘要
+    # =====================================================
+    st.divider()
+
+    st.subheader("📋 航班摘要")
+
     travel_card(
-        "2026 / 08 / 14",
-        "東京 → 桃園國際機場",
-        "航班資訊可之後加入"
+        "8 / 10",
+        "MM620｜樂桃航空",
+        """
+        02:00 桃園 T1 → 06:30 成田 T1<br>
+        Airbus A320｜經濟艙｜3 小時 30 分
+        """
+    )
+
+    travel_card(
+        "8 / 14",
+        "SL395｜泰國獅航",
+        """
+        17:40 成田 T1N → 20:20 桃園 T1<br>
+        Boeing 737-900｜經濟艙｜3 小時 40 分
+        """
+    )
+
+    st.info(
+        "⏰ 所有航班時間皆為當地時間。"
     )
 
 
@@ -398,6 +733,7 @@ elif page == "🏨 飯店位置":
     st.caption("Hotel Information")
 
     st.divider()
+
 
     # -----------------------------------------------------
     # Hotel 1
@@ -421,6 +757,7 @@ elif page == "🏨 飯店位置":
     )
 
     st.divider()
+
 
     # -----------------------------------------------------
     # Hotel 2
