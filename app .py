@@ -150,7 +150,7 @@ page = st.radio(
         "💱 台幣 / 日幣匯率換算"
     ]
 )
-    st.divider()
+st.divider()
 
     st.caption("Tokyo Travel 2026")
 
