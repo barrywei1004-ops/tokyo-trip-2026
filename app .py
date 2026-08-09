@@ -288,7 +288,6 @@ def travel_card(time, title, description):
 
 # =========================================================
 # 共用函式：航班卡片
-# 修正：HTML 不再被 Streamlit 當成程式碼顯示
 # =========================================================
 def flight_card(
     trip_type,
@@ -433,9 +432,7 @@ with st.sidebar:
 if page == "🗺️ 主要旅程":
 
     st.title("🗺️ 主要旅程")
-
     st.caption("Tokyo Itinerary")
-
     st.divider()
 
     selected_day = st.selectbox(
@@ -456,7 +453,6 @@ if page == "🗺️ 主要旅程":
     if selected_day == "Day 1｜8/10":
 
         st.subheader("Day 1｜8月10日")
-
         st.caption("抵達東京・淺草")
 
         travel_card(
@@ -482,7 +478,6 @@ if page == "🗺️ 主要旅程":
     elif selected_day == "Day 2｜8/11":
 
         st.subheader("Day 2｜8月11日")
-
         st.caption("Tokyo Day 2")
 
         travel_card(
@@ -496,7 +491,6 @@ if page == "🗺️ 主要旅程":
     elif selected_day == "Day 3｜8/12":
 
         st.subheader("Day 3｜8月12日")
-
         st.caption("換飯店日")
 
         travel_card(
@@ -516,13 +510,32 @@ if page == "🗺️ 主要旅程":
     elif selected_day == "Day 4｜8/13":
 
         st.subheader("Day 4｜8月13日")
-
-        st.caption("Tokyo Day 4")
+        st.caption("澀谷行程")
 
         travel_card(
-            "All Day",
-            "🗼 東京行程",
-            "行程內容之後可以加入"
+            "13:00",
+            "🥩 敘敘苑燒肉",
+            "午餐｜燒肉"
+        )
+
+        st.link_button(
+            "📍 開啟敘敘苑 Google Maps",
+            "https://maps.app.goo.gl/erdqnTjX8E9yDmpq5",
+            use_container_width=True
+        )
+
+        st.write("")
+
+        travel_card(
+            "16:00",
+            "🌇 SHIBUYA SKY 涉谷 SKY 觀景台",
+            "東京高空觀景台｜澀谷"
+        )
+
+        st.link_button(
+            "📍 開啟 SHIBUYA SKY Google Maps",
+            "https://maps.app.goo.gl/WhqgTfNqPQJdWVVB6",
+            use_container_width=True
         )
 
 
@@ -530,7 +543,6 @@ if page == "🗺️ 主要旅程":
     elif selected_day == "Day 5｜8/14":
 
         st.subheader("Day 5｜8月14日")
-
         st.caption("Tokyo → Taiwan")
 
         travel_card(
@@ -552,13 +564,9 @@ if page == "🗺️ 主要旅程":
 elif page == "✈️ 航班資訊":
 
     st.title("✈️ 航班資訊")
-
     st.caption("Flight Information")
-
     st.divider()
 
-
-    # 旅客選擇
     passenger = st.selectbox(
         "查看旅客",
         [
@@ -580,10 +588,6 @@ elif page == "✈️ 航班資訊":
 
     st.divider()
 
-
-    # =====================================================
-    # 去程
-    # =====================================================
     st.subheader("🇹🇼 → 🇯🇵 去程")
 
     flight_card(
@@ -606,10 +610,6 @@ elif page == "✈️ 航班資訊":
         passengers=passenger_text
     )
 
-
-    # =====================================================
-    # 回程
-    # =====================================================
     st.subheader("🇯🇵 → 🇹🇼 回程")
 
     flight_card(
@@ -632,10 +632,6 @@ elif page == "✈️ 航班資訊":
         passengers=passenger_text
     )
 
-
-    # =====================================================
-    # 航班摘要
-    # =====================================================
     st.divider()
 
     st.subheader("📋 航班摘要")
@@ -663,13 +659,9 @@ elif page == "✈️ 航班資訊":
 elif page == "🏨 飯店位置":
 
     st.title("🏨 飯店位置")
-
     st.caption("Hotel Information")
-
     st.divider()
 
-
-    # Hotel 1
     st.subheader("8/10 ～ 8/12")
 
     travel_card(
@@ -686,8 +678,6 @@ elif page == "🏨 飯店位置":
 
     st.divider()
 
-
-    # Hotel 2
     st.subheader("8/12 ～ 8/14")
 
     travel_card(
@@ -709,13 +699,10 @@ elif page == "🏨 飯店位置":
 elif page == "💱 台幣 / 日幣匯率換算":
 
     st.title("💱 台幣 / 日幣匯率換算")
-
     st.caption("TWD ↔ JPY Currency Converter")
-
     st.divider()
 
     rate, rate_date = get_exchange_rate()
-
 
     if rate is not None:
 
@@ -726,14 +713,12 @@ elif page == "💱 台幣 / 日幣匯率換算":
         col1, col2 = st.columns(2)
 
         with col1:
-
             st.metric(
                 "NT$1 可換",
                 f"¥{rate:.3f}"
             )
 
         with col2:
-
             st.metric(
                 "¥1 約為",
                 f"NT${jpy_to_twd:.3f}"
@@ -749,7 +734,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
 
         st.divider()
 
-
         mode = st.radio(
             "換算方向",
             [
@@ -759,8 +743,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
             horizontal=True
         )
 
-
-        # JPY → TWD
         if mode == "🇯🇵 日幣 → 🇹🇼 台幣":
 
             yen = st.number_input(
@@ -795,8 +777,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
                     f"¥{value:,} ≈ NT${converted:,.0f}"
                 )
 
-
-        # TWD → JPY
         else:
 
             twd = st.number_input(
@@ -831,7 +811,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
                     f"NT${value:,} ≈ ¥{converted:,.0f}"
                 )
 
-
         st.divider()
 
         if st.button(
@@ -841,7 +820,6 @@ elif page == "💱 台幣 / 日幣匯率換算":
 
             st.cache_data.clear()
             st.rerun()
-
 
     else:
 
